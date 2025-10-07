@@ -78,7 +78,7 @@ exports.getCoupons = async (req, res) => {
   try {
     const coupons = await Coupon.find()
       .populate('storeId', 'name logoUrl')
-      .sort({ createdAt: -1 });
+     
       
     res.json(coupons);
   } catch (error) {
