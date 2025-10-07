@@ -89,7 +89,6 @@ exports.getCoupons = async (req, res) => {
           select: 'name slug'
         }
       })
-      .populate('createdBy', 'name email')
       .sort(sortOption);
 
     console.log('Found coupons:', coupons.length);
