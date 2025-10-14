@@ -148,39 +148,44 @@ exports.createCoupon = async (req, res) => {
       }
     }
 
-    // Prepare coupon data
-    const couponData = {
-      title,
-      description,
-      code,
-      deepLink,
-      metaKeywords: Array.isArray(metaKeywords) ? metaKeywords : 
-                    typeof metaKeywords === 'string' ? metaKeywords.split(',').map(k => k.trim()) : [],
-      metaDescription,
-      discountType,
-      discountValue: parseFloat(discountValue),
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      isFeatured: isFeatured === 'true' || isFeatured === true,
-      isExclusive: isExclusive === 'true' || isExclusive === true,
-      isVerified: isVerified === 'true' || isVerified === true,
-      isExpirySoon: isExpirySoon === 'true' || isExpirySoon === true,
-      storeId,
-      termsConditions,
-      bannerImage: bannerImageUrl, // This was missing!
-      couponType: couponType || 'regular',
-      displayTitle: displayTitle || title,
-      slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-      createdBy // Make sure to pass this from your auth middleware
-    };
-
-    // Validate required fields
-    if (!title || !code || !discountType || !discountValue || !startDate || !endDate || !storeId) {
-      return res.status(400).json({
-        error: "Missing required fields",
-        required: ["title", "code", "discountType", "discountValue", "startDate", "endDate", "storeId"]
-      });
+    // Prepare coupon data - only include fields that have values
+    const couponData = {};
+    
+    if (title) couponData.title = title;
+    if (description) couponData.description = description;
+    if (code) couponData.code = code;
+    if (deepLink) couponData.deepLink = deepLink;
+    
+    if (metaKeywords) {
+      couponData.metaKeywords = Array.isArray(metaKeywords) ? metaKeywords : 
+                                 typeof metaKeywords === 'string' ? metaKeywords.split(',').map(k => k.trim()) : [];
     }
+    
+    if (metaDescription) couponData.metaDescription = metaDescription;
+    if (discountType) couponData.discountType = discountType;
+    
+    if (discountValue) {
+      couponData.discountValue = parseFloat(discountValue);
+    }
+    
+    if (startDate) couponData.startDate = new Date(startDate);
+    if (endDate) couponData.endDate = new Date(endDate);
+    
+    // Boolean fields - always set them
+    couponData.isFeatured = isFeatured === 'true' || isFeatured === true;
+    couponData.isExclusive = isExclusive === 'true' || isExclusive === true;
+    couponData.isVerified = isVerified === 'true' || isVerified === true;
+    couponData.isExpirySoon = isExpirySoon === 'true' || isExpirySoon === true;
+    
+    if (storeId) couponData.storeId = storeId;
+    if (termsConditions) couponData.termsConditions = termsConditions;
+    if (bannerImageUrl) couponData.bannerImage = bannerImageUrl;
+    
+    couponData.couponType = couponType || 'regular';
+    couponData.displayTitle = displayTitle || title || '';
+    couponData.slug = slug || (title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '');
+    
+    if (createdBy) couponData.createdBy = createdBy;
 
     const newCoupon = new Coupon(couponData);
     const savedCoupon = await newCoupon.save();

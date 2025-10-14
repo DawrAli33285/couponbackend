@@ -1,65 +1,59 @@
 const mongoose = require('mongoose');
 
 const couponSchema = new mongoose.Schema({
-  // Title (Already exists)
+  // Title
   title: {
-    type: String,
-    required: true
+    type: String
   },
   
-  // Description (Already exists)
+  // Description
   description: {
     type: String
   },
   
-  // Code (Already exists)
+  // Code
   code: {
     type: String,
-    required: true,
     unique: true
   },
   
-  // Deep Link (MISSING - ADDED)
+  // Deep Link
   deepLink: {
     type: String,
     trim: true
   },
   
-  // Meta Keywords (MISSING - ADDED)
+  // Meta Keywords
   metaKeywords: [{
     type: String,
     trim: true
   }],
   
-  // Meta Descriptions (MISSING - ADDED)
+  // Meta Descriptions
   metaDescription: {
     type: String,
     trim: true
   },
   
-  // Discount Type (Already exists)
+  // Discount Type
   discountType: {
-    type: String,
-    required: true
+    type: String
   },
   
-  // Discount Value (Already exists)
+  // Discount Value
   discountValue: {
-    type: Number,
-    required: true
+    type: Number
   },
   
-  // Start Date || End Date (Already exists)
+  // Start Date || End Date
   startDate: {
-    type: Date,
-    required: true
+    type: Date
   },
   endDate: {
-    type: Date,
-    required: true
+    type: Date
   },
   
-  // Featured || Exclusive || Verified (UPDATED)
+  // Featured || Exclusive || Verified
   isFeatured: {
     type: Boolean,
     default: false
@@ -73,54 +67,42 @@ const couponSchema = new mongoose.Schema({
     default: false
   },
   
-  // Expiry Soon (MISSING - ADDED)
+  // Expiry Soon
   isExpirySoon: {
     type: Boolean,
     default: false
   },
   
-  // Store Name (need to show on FrontEnd) - Reference (Already exists)
+  // Store Name (need to show on FrontEnd) - Reference
   storeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Store',
-    required: true
+    ref: 'Store'
   },
   store: {
     type: mongoose.Schema.ObjectId,
     ref: 'Store',
   },
   
-  // Terms & Condition (MISSING - ADDED)
+  // Terms & Condition
   termsConditions: {
     type: String,
     trim: true
   },
   
-  // Banner Image for Featured Coupons (MISSING - ADDED)
+  // Banner Image for Featured Coupons
   bannerImage: {
     type: String,
-    trim: true,
-    // Required when isFeatured is true
-    validate: {
-      validator: function(v) {
-        // If featured, banner image is required
-        if (this.isFeatured && !v) {
-          return false;
-        }
-        return true;
-      },
-      message: 'Banner image is required for featured coupons'
-    }
+    trim: true
   },
   
-  // Coupon Type for Display Titles (MISSING - ADDED)
+  // Coupon Type for Display Titles
   couponType: {
     type: String,
     enum: ['regular', 'exclusive', 'verified', 'featured'],
     default: 'regular'
   },
   
-  // Display Title based on type (MISSING - ADDED)
+  // Display Title based on type
   displayTitle: {
     type: String,
     trim: true
@@ -128,7 +110,6 @@ const couponSchema = new mongoose.Schema({
   
   slug: {
     type: String,
-    required: true,
     unique: true
   },
   
@@ -144,7 +125,6 @@ const couponSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  
   
   // Additional useful fields
   isActive: {
